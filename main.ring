@@ -3,9 +3,10 @@ Load "Parser.ring"
 
 func main()
     see "Enter input directory path: " + nl
-    dirPath = "C:\Users\hemda\studies\Tar1\nand2tetris\projects\07"
+    dirPath = input()
+    dirPath = trim(dirPath)
+    
     see "You entered: " + dirPath + nl
-
     allFiles = findVMFiles(dirPath)
     see "Found " + len(allFiles) + " .vm files." + nl
 
@@ -38,6 +39,7 @@ func main()
                 see "Segment: " + segment + ", Index: " + index + nl
                 codeWriter.writePushPop(cmdType, segment, index)
                 see "Wrote push command." + nl
+
             but cmdType = "C_POP"
                 see "Pop command." + nl
                 segment = parser.arg1()

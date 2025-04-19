@@ -150,26 +150,28 @@ class CodeWriter
         end_label = "END" + self.labelCount
         code = ""
         
-        if command = "eq"+char(10)
+        if command = "eq"
             code = self.getEqCommandLine(end_label, loop_label)
-        but command = "lt"+char(10)
+        but command = "lt"
             code = self.getLtCommandLine(end_label, loop_label)
-        but command = "gt"+char(10)
+        but command = "gt"
             code = self.getGtCommandLine(end_label, loop_label)
-        but command = "add"+char(10)
+        but command = "add"
             code = self.getAddCode()
-        but command = "sub"+char(10)
+        but command = "sub"
             code = self.getSubCode()
-        but command = "neg"+char(10)
+        but command = "neg"
             code = self.getNegCode()
-        but command = "and"+char(10)
+        but command = "and"
             code = self.getAndCode()
-        but command = "or"+char(10)
+        but command = "or"
             code = self.getOrCode()
-        but command = "not"+char(10)
+        but command = "not"
             code = self.getNotCode()
         else
             code = "ERROR: Invalid arithmetic command " + command
+            see "ERROR: Invalid arithmetic command " + command
+		
         ok
         
         self.writeLine(code)
