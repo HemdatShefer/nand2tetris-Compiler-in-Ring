@@ -3,6 +3,7 @@ Load "HelperFunctions.ring"
 
 class Parser 
 
+    // define class variables for file, current line, split line, and finish flag
     file_handle currentLine splittedLine finished
 
     func init (filePath)
@@ -25,42 +26,48 @@ class Parser
         ok
 
 func advance()
-    if not hasMoreCommands()
-        finished = true
-        return
-    ok
-        
-    currentLine = fgets(file_handle, 200)
-    
-    # Handle null values from fgets
-    if currentLine = NULL
-        splittedLine = []
-        return
-    ok
-    
-    # Convert to string type explicitly if needed
-    currentLine = string(currentLine)
-    currentLine = trim(currentLine)
-    
-    # Check for comments
-    pos = 0  # Initialize pos first
-    try
-        pos = find(currentLine, "//")
-    catch
-        pos = 0
+    while hasMoreCommands()
+
+        currentLine = fgets(file_handle, 200)
+
+        if currentLine = NULL
+            splittedLine = []
+            finished = true
+            return
+        ok
+
+        currentLine = string(currentLine)
+        currentLine = trim(currentLine)
+
+        # Remove inline comments
+        try
+            pos = find(currentLine, "//")
+        catch
+            pos = 0
+        end
+
+        if pos > 0
+            currentLine = left(currentLine, pos - 1)
+        ok
+
+        currentLine = trim(currentLine)
+
+        if currentLine = ""
+            loop  # skip to next line
+        else
+            splittedLine = my_split(currentLine, " ")
+            return  # successfully advanced to a real command
+        ok
+
     end
-    
-    if pos > 0
-        currentLine = left(currentLine, pos - 1)
-    ok
-    
-    currentLine = trim(currentLine)
-    
-    if currentLine = ""
-        splittedLine = []
-    else
-        splittedLine = my_split(currentLine, " ")
-    ok
+    # If we're here, no more valid commands
+	splittedLine = []
+	finished = true
+	
+	see "Current line: " + parser.currentLine + nl
+	see "Splitted: " + parser.splittedLine + nl
+
+
 
 
 func commandType()
@@ -75,31 +82,39 @@ func commandType()
     else
         return "C_NONE"
     ok
-    
+
+    see "DEBUG: command = " + cmd + nl
+
     switch cmd
     on "push"
         return "C_PUSH"
     on "pop"
         return "C_POP"
-    on "label"
-        return "C_LABEL"
-    on "goto"
-        return "C_GOTO"
-    on "if-goto"
-        return "C_IF"
-    on "function"
-        return "C_FUNCTION"
-    on "call"
-        return "C_CALL"
-    on "return"
-        return "C_RETURN"
-    on "add" ; on "sub" ; on "neg"
-    on "eq"  ; on "gt"  ; on "lt"
-    on "and" ; on "or"  ; on "not"
-        return "C_ARITHMETIC"
+
+    # Arithmetic/logical commands
+    on "add"+char(10)
+        return  "C_ARITHMETIC"
+    on "sub"+char(10)
+        return "C_ARITHMETIC" 
+    on "neg"+char(10)
+        return "C_ARITHMETIC" 
+    on "eq"+char(10)
+        return "C_ARITHMETIC" 
+    on "gt"+char(10)
+        return "C_ARITHMETIC" 
+    on "lt"+char(10)
+        return "C_ARITHMETIC" 
+    on "and"+char(10)
+        return "C_ARITHMETIC" 
+    on "or"+char(10)
+        return "C_ARITHMETIC" 
+    on "not"+char(10)
+        return "C_ARITHMETIC" 
+
     other
         return "C_NONE"
     off
+
 
     func arg1()
         ctype = commandType()
@@ -108,11 +123,10 @@ func commandType()
         ok
 
         if ctype = "C_ARITHMETIC"
-            return trim(splittedLine[1])
-        elseif ctype = "C_RETURN"
-            return ""
+            return lower(trim(splittedLine[1]))
+
         else
-            if splittedLine.len() >= 2
+            if len(splittedLine) >= 2
                 return trim(splittedLine[2])
             else
                 return ""
@@ -122,7 +136,7 @@ func commandType()
     func arg2()
         ctype = commandType()
         if (ctype = "C_PUSH") or (ctype = "C_POP") 
-            if splittedLine.len() >= 3
+            if len(splittedLine) >= 3
                 return trim(splittedLine[3])
             else
                 return "0"

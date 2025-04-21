@@ -10,104 +10,116 @@ class CodeWriter
         fwrite(self.file_stream, code)
     
     func getEqCommandLine(end_label, loop_label)
-        result = ""
+        result = "//eq" + nl
+
         result += "@SP" + self.NEW_LINE
-        result += "M=M-1" + self.NEW_LINE
-        result += "A=M" + self.NEW_LINE
+        result += "A=M-1" + self.NEW_LINE
         result += "D=M" + self.NEW_LINE
         result += "A=A-1" + self.NEW_LINE
-        result += "M=M-D" + self.NEW_LINE
-        result += "D=M" + self.NEW_LINE
+        result += "D=D-M" + self.NEW_LINE
         result += "@" + loop_label + self.NEW_LINE
-        result += "D;JNE" + self.NEW_LINE
+        result += "D;JEQ" + self.NEW_LINE
+        result += "D=0" + self.NEW_LINE
         result += "@SP" + self.NEW_LINE
-        result += "M=M-1" + self.NEW_LINE
-        result += "A=M" + self.NEW_LINE
-        result += "M=-1" + self.NEW_LINE
+        result += "A=M-1" + self.NEW_LINE
+        result += "A=A-1" + self.NEW_LINE
+        result += "M=D" + self.NEW_LINE
         result += "@" + end_label + self.NEW_LINE
         result += "0;JMP" + self.NEW_LINE
         result += "(" + loop_label + ")" + self.NEW_LINE
+        result += "D=-1" + self.NEW_LINE
         result += "@SP" + self.NEW_LINE
-        result += "M=M-1" + self.NEW_LINE
-        result += "A=M" + self.NEW_LINE
-        result += "M=0" + self.NEW_LINE
+        result += "A=M-1" + self.NEW_LINE
+        result += "A=A-1" + self.NEW_LINE
+        result += "M=D" + self.NEW_LINE
         result += "(" + end_label + ")" + self.NEW_LINE
         result += "@SP" + self.NEW_LINE
-        result += "M=M+1" + self.NEW_LINE
+        result += "M=M-1" + self.NEW_LINE
+
         return result
     
     func getLtCommandLine(end_label, loop_label)
-        result = ""
+        result = "//lt" + nl
+
         result += "@SP" + self.NEW_LINE
-        result += "M=M-1" + self.NEW_LINE
-        result += "A=M" + self.NEW_LINE
+        result += "A=M-1" + self.NEW_LINE
         result += "D=M" + self.NEW_LINE
         result += "A=A-1" + self.NEW_LINE
-        result += "M=M-D" + self.NEW_LINE
-        result += "D=M" + self.NEW_LINE
+        result += "D=D-M" + self.NEW_LINE
         result += "@" + loop_label + self.NEW_LINE
-        result += "D;JGE" + self.NEW_LINE
+        result += "D;JLT" + self.NEW_LINE
+        result += "D=0" + self.NEW_LINE
         result += "@SP" + self.NEW_LINE
-        result += "M=M-1" + self.NEW_LINE
-        result += "A=M" + self.NEW_LINE
-        result += "M=-1" + self.NEW_LINE
+        result += "A=M-1" + self.NEW_LINE
+        result += "A=A-1" + self.NEW_LINE
+        result += "M=D" + self.NEW_LINE
         result += "@" + end_label + self.NEW_LINE
         result += "0;JMP" + self.NEW_LINE
         result += "(" + loop_label + ")" + self.NEW_LINE
+        result += "D=-1" + self.NEW_LINE
         result += "@SP" + self.NEW_LINE
-        result += "M=M-1" + self.NEW_LINE
-        result += "A=M" + self.NEW_LINE
-        result += "M=0" + self.NEW_LINE
+        result += "A=M-1" + self.NEW_LINE
+        result += "A=A-1" + self.NEW_LINE
+        result += "M=D" + self.NEW_LINE
         result += "(" + end_label + ")" + self.NEW_LINE
         result += "@SP" + self.NEW_LINE
-        result += "M=M+1" + self.NEW_LINE
+        result += "M=M-1" + self.NEW_LINE
+
         return result
     
     func getGtCommandLine(end_label, loop_label)
-        result = ""
+        result = "//gt" + nl
+
         result += "@SP" + self.NEW_LINE
-        result += "M=M-1" + self.NEW_LINE
-        result += "A=M" + self.NEW_LINE
+        result += "A=M-1" + self.NEW_LINE
         result += "D=M" + self.NEW_LINE
         result += "A=A-1" + self.NEW_LINE
-        result += "M=M-D" + self.NEW_LINE
-        result += "D=M" + self.NEW_LINE
+        result += "D=D-M" + self.NEW_LINE
         result += "@" + loop_label + self.NEW_LINE
-        result += "D;JLE" + self.NEW_LINE
+        result += "D;JGT" + self.NEW_LINE
+        result += "D=0" + self.NEW_LINE
         result += "@SP" + self.NEW_LINE
-        result += "M=M-1" + self.NEW_LINE
-        result += "A=M" + self.NEW_LINE
-        result += "M=-1" + self.NEW_LINE
+        result += "A=M-1" + self.NEW_LINE
+        result += "A=A-1" + self.NEW_LINE
+        result += "M=D" + self.NEW_LINE
         result += "@" + end_label + self.NEW_LINE
         result += "0;JMP" + self.NEW_LINE
         result += "(" + loop_label + ")" + self.NEW_LINE
+        result += "D=-1" + self.NEW_LINE
         result += "@SP" + self.NEW_LINE
-        result += "M=M-1" + self.NEW_LINE
-        result += "A=M" + self.NEW_LINE
-        result += "M=0" + self.NEW_LINE
+        result += "A=M-1" + self.NEW_LINE
+        result += "A=A-1" + self.NEW_LINE
+        result += "M=D" + self.NEW_LINE
         result += "(" + end_label + ")" + self.NEW_LINE
         result += "@SP" + self.NEW_LINE
-        result += "M=M+1" + self.NEW_LINE
+        result += "M=M-1" + self.NEW_LINE
+
         return result
     
     func getAddCode()
         result = "//add" + nl
+
         result += "@SP" + nl
-        result += "M=M-1" + nl
-        result += "A=M" + nl
+        result += "A=M-1" + nl
         result += "D=M" + nl
         result += "A=A-1" + nl
-        result += "M=M+D" + nl
+        result += "M=D+M" + nl
+        result += "@SP" + nl
+        result += "M=M-1" + nl
+
         return result
     
     func getSubCode()
         result = "//sub" + nl
+
         result += "@SP" + nl
-        result += "M=M-1" + nl
-        result += "A=M" + nl
+        result += "A=M-1" + nl
         result += "D=M" + nl
         result += "A=A-1" + nl
         result += "M=M-D" + nl
+        result += "@SP" + nl
+        result += "M=M-1" + nl
+        
         return result
     
     func getNegCode()
@@ -145,31 +157,36 @@ class CodeWriter
         return result
     
     func writeArithmetic(command)
+        //see "myyyyy cmd:" + command 
+
+        addstr = string(trim("add"))
         self.labelCount = self.labelCount + 1
         loop_label = "LOOP" + self.labelCount
         end_label = "END" + self.labelCount
         code = ""
         
-        if command = "eq"
+        if addstr = "eq"
             code = self.getEqCommandLine(end_label, loop_label)
-        but command = "lt"
+        but addstr = "lt"
             code = self.getLtCommandLine(end_label, loop_label)
-        but command = "gt"
+        but addstr = "gt"
             code = self.getGtCommandLine(end_label, loop_label)
-        but command = "add"
+        but addstr = "add"
             code = self.getAddCode()
-        but command = "sub"
+        but addstr = "sub"
             code = self.getSubCode()
-        but command = "neg"
+        but addstr = "neg"
             code = self.getNegCode()
-        but command = "and"
+        but addstr = "and"
             code = self.getAndCode()
-        but command = "or"
+        but addstr = "or"
             code = self.getOrCode()
-        but command = "not"
+        but addstr = "not"
             code = self.getNotCode()
         else
             code = "ERROR: Invalid arithmetic command " + command
+            see "ERROR: Invalid arithmetic command " + command
+		
         ok
         
         self.writeLine(code)
@@ -201,6 +218,7 @@ class CodeWriter
             code += "@13" + self.NEW_LINE
             code += "A=M" + self.NEW_LINE
             code += "M=D" + self.NEW_LINE
+
         but segment = "argument"
             code = "//pop argument " + index + self.NEW_LINE
             code += "@" + index + self.NEW_LINE
@@ -216,6 +234,7 @@ class CodeWriter
             code += "@13" + self.NEW_LINE
             code += "A=M" + self.NEW_LINE
             code += "M=D" + self.NEW_LINE
+
         but segment = "this"
             code = "//pop this " + index + self.NEW_LINE
             code += "@" + index + self.NEW_LINE
@@ -231,6 +250,7 @@ class CodeWriter
             code += "@13" + self.NEW_LINE
             code += "A=M" + self.NEW_LINE
             code += "M=D" + self.NEW_LINE
+
         but segment = "that"
             code = "//pop that " + index + self.NEW_LINE
             code += "@" + index + self.NEW_LINE
@@ -246,6 +266,7 @@ class CodeWriter
             code += "@13" + self.NEW_LINE
             code += "A=M" + self.NEW_LINE
             code += "M=D" + self.NEW_LINE
+
         but segment = "pointer"
             code = "//pop pointer " + index + self.NEW_LINE
             code += "@" + index + self.NEW_LINE
@@ -261,6 +282,7 @@ class CodeWriter
             code += "@13" + self.NEW_LINE
             code += "A=M" + self.NEW_LINE
             code += "M=D" + self.NEW_LINE
+
         but segment = "temp"
             code = "//pop temp " + index + self.NEW_LINE
             code += "@" + index + self.NEW_LINE
@@ -276,6 +298,7 @@ class CodeWriter
             code += "@13" + self.NEW_LINE
             code += "A=M" + self.NEW_LINE
             code += "M=D" + self.NEW_LINE
+
         but segment = "static"
             code = "//pop static " + index + self.NEW_LINE
             code += "@SP" + self.NEW_LINE
@@ -285,6 +308,7 @@ class CodeWriter
             code += "M=D" + self.NEW_LINE
             code += "@SP" + self.NEW_LINE
             code += "M=M-1" + self.NEW_LINE
+
         else
             code = "ERROR: Invalid segment " + segment
         ok
@@ -306,6 +330,7 @@ class CodeWriter
             code += "M=D" + self.NEW_LINE
             code += "@SP" + self.NEW_LINE
             code += "M=M+1" + self.NEW_LINE
+
         but segment = "constant"
             code = "//push constant " + index + self.NEW_LINE
             code += "@" + index + self.NEW_LINE
@@ -315,6 +340,7 @@ class CodeWriter
             code += "M=D" + self.NEW_LINE
             code += "@SP" + self.NEW_LINE
             code += "M=M+1" + self.NEW_LINE
+
         but segment = "argument"
             code = "//push argument " + index + self.NEW_LINE
             code += "@" + index + self.NEW_LINE
@@ -327,6 +353,7 @@ class CodeWriter
             code += "M=D" + self.NEW_LINE
             code += "@SP" + self.NEW_LINE
             code += "M=M+1" + self.NEW_LINE
+
         but segment = "this"
             code = "//push this " + index + self.NEW_LINE
             code += "@" + index + self.NEW_LINE
@@ -339,6 +366,7 @@ class CodeWriter
             code += "M=D" + self.NEW_LINE
             code += "@SP" + self.NEW_LINE
             code += "M=M+1" + self.NEW_LINE
+
         but segment = "that"
             code = "//push that " + index + self.NEW_LINE
             code += "@" + index + self.NEW_LINE
@@ -351,6 +379,7 @@ class CodeWriter
             code += "M=D" + self.NEW_LINE
             code += "@SP" + self.NEW_LINE
             code += "M=M+1" + self.NEW_LINE
+            
         but segment = "pointer"
             code = "//push pointer " + index + self.NEW_LINE
             code += "@" + index + self.NEW_LINE
@@ -363,6 +392,7 @@ class CodeWriter
             code += "M=D" + self.NEW_LINE
             code += "@SP" + self.NEW_LINE
             code += "M=M+1" + self.NEW_LINE
+
         but segment = "temp"
             code = "//push temp " + index + self.NEW_LINE
             code += "@" + index + self.NEW_LINE
@@ -375,6 +405,7 @@ class CodeWriter
             code += "M=D" + self.NEW_LINE
             code += "@SP" + self.NEW_LINE
             code += "M=M+1" + self.NEW_LINE
+
         but segment = "static"
             code = "//push static " + index + self.NEW_LINE
             code += "@" + index + self.NEW_LINE
