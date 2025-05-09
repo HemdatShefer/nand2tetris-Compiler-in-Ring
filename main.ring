@@ -3,70 +3,72 @@ Load "Parser.ring"   // Load the files with the classes
 
 func main()
     see "Enter input directory path: " + nl
-    dirPath = input()                   // Get folder path from user
-    dirPath = trim(dirPath)            // Remove spaces
+    dirPath = input()  // Get folder path from user
+    dirPath = trim(dirPath)
 
-    see "You entered: " + dirPath + nl
-    allFiles = findVMFiles(dirPath)    // Find all .vm files in the folder
-    see "Found " + len(allFiles) + " .vm files." + nl
-
-    if len(allFiles) = 0               // If no .vm files → stop
+    allFiles = findVMFiles(dirPath)  // Find all .vm files in the folder
+    if len(allFiles) = 0  // If no .vm files → stop
         see "No .vm files found in the directory." + nl
         return
     ok
 
+    outputFile = getAsmFilePath(allFiles[1])  // Use first file to derive output path
+    if right(dirPath, 3) != ".vm"  // Directory input: override with directory-based name
+        parts = my_split(dirPath, "\\")
+        dirName = parts[len(parts)]
+        outputFile = dirPath + "\\" + dirName + ".asm"
+    ok
+
+    codeWriter = new CodeWriter(outputFile)  // Create writer object
+    codeWriter.writeInit()  // Write bootstrap code
+
     for file in allFiles
-        see "Processing file: " + file + nl
-        outputFile = getAsmFilePath(file)   // Make .asm file name
-        see "Output file path: " + outputFile + nl
+        codeWriter.setFileName(file)  // Set current file for symbol generation
+        parser = new Parser(file)  // Create parser object
 
-        parser = new Parser(file)          // Create parser object
-        see "Parser initialized successfully." + nl
-
-        codeWriter = new CodeWriter(outputFile)   // Create writer object
-        see "Code writer initialized successfully." + nl
-
-        see "Starting to write hack code for file " + file + nl
-        while parser.hasMoreCommands()     // While there are commands
-            parser.advance()               // Go to next command
-            see "Advanced to next command." + nl
-
+        while parser.hasMoreCommands()  // While there are commands
+            parser.advance()  // Go to next command
             cmdType = parser.commandType()
-            see "Command type: " + cmdType + nl
 
-            if cmdType = "C_PUSH"
-                see "Push command." + nl
-                segment = parser.arg1()     // Get segment (like local)
-                index = parser.arg2()       // Get number
-                see "Segment: " + segment + ", Index: " + index + nl
-                codeWriter.writePushPop(cmdType, segment, index)
-                see "Wrote push command." + nl
-
-            but cmdType = "C_POP"
-                see "Pop command." + nl
+            if cmdType = "C_PUSH" or cmdType = "C_POP"
                 segment = parser.arg1()
                 index = parser.arg2()
-                see "Segment: " + segment + ", Index: " + index + nl
                 codeWriter.writePushPop(cmdType, segment, index)
-                see "Wrote pop command." + nl
             
             but cmdType = "C_ARITHMETIC"
-                see "Arithmetic command." + nl
                 command = parser.arg1()
-                see "Command: " + command + nl
                 codeWriter.writeArithmetic(command)
-                see "Wrote arithmetic command." + nl
+            
+            but cmdType = "C_LABEL"
+                label = parser.arg1()
+                codeWriter.writeLabel(label)
+            
+            but cmdType = "C_GOTO"
+                label = parser.arg1()
+                codeWriter.writeGoto(label)
+            
+            but cmdType = "C_IF"
+                label = parser.arg1()
+                codeWriter.writeIf(label)
+            
+            but cmdType = "C_FUNCTION"
+                functionName = parser.arg1()
+                nVars = parser.arg2()
+                codeWriter.writeFunction(functionName, nVars)
+            
+            but cmdType = "C_CALL"
+                functionName = parser.arg1()
+                nArgs = parser.arg2()
+                codeWriter.writeCall(functionName, nArgs)
+            
+            but cmdType = "C_RETURN"
+                codeWriter.writeReturn()
             ok
-
         end
-        see "Finished processing file: " + file + nl
     next
 
-    see "Closing code writer." + nl
-    codeWriter.close()     // Close the output file
-    see "Code writer closed." + nl
-
-    see "Assembly code has been written to " + outputFile + nl
+    codeWriter.close()  // Close the output file
+    see "File created: " + outputFile + nl
 end
 
 
