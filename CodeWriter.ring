@@ -7,6 +7,14 @@ class CodeWriter
     
     func init(fileName)
         self.file_stream = fopen(fileName, "w+")
+	see "open file: " + fileName
+	
+	if not self.file_stream 
+	        see "ERROR: Could not open file for writing: " + fileName + nl
+	        self.file_stream = NULL
+	        return
+    	ok
+
         # Extract just the base filename from the path
         self.fileName = extractFileName(fileName)
     
@@ -646,6 +654,9 @@ class CodeWriter
         self.writeLine(code)
     
     func close()
+	if not self.file_stream 
+	        see "ERROR: Could not open file for writing: " + fileName + nl
+	ok
         fclose(self.file_stream)
         self.file_stream = NULL
     
