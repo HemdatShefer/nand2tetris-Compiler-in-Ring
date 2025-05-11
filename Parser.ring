@@ -73,28 +73,47 @@ class Parser
             return "C_NONE"
         ok
 
-        cmd = lower(trim(splittedLine[1]))
+	cmd = cleanString(lower(trim(splittedLine[1])))
 
         switch cmd
-        on "push"       return "C_PUSH"
-        on "pop"        return "C_POP"
-        on "label"      return "C_LABEL"
-        on "goto"       return "C_GOTO"
-        on "if-goto"    return "C_IF"
-        on "function"   return "C_FUNCTION"
-        on "call"       return "C_CALL"
-        on "return"     return "C_RETURN"
+        on "push"
+            return "C_PUSH"
+        on "pop"
+            return "C_POP"
+        on "label"
+            return "C_LABEL"
+        on "goto"
+            return "C_GOTO"
+        on "if-goto"
+            return "C_IF"
+        on "function"
+            return "C_FUNCTION"
+        on "call"
+            return "C_CALL"
+        on "return"
+            return "C_RETURN"
         on "add"
+            return "C_ARITHMETIC"
         on "sub"
+            return "C_ARITHMETIC"
         on "neg"
+            return "C_ARITHMETIC"
         on "eq"
+            return "C_ARITHMETIC"
         on "gt"
+            return "C_ARITHMETIC"
         on "lt"
+            return "C_ARITHMETIC"
         on "and"
+            return "C_ARITHMETIC"
         on "or"
-        on "not"        return "C_ARITHMETIC"
-        other           return "C_NONE"
+            return "C_ARITHMETIC"
+        on "not"
+            return "C_ARITHMETIC"
+        other
+            return "C_NONE"
         off
+
 
     func arg1()
         ctype = commandType()
