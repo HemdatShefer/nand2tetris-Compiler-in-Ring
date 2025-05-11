@@ -106,3 +106,15 @@ func getAsmFilePath(vmFilePath)
     baseName = left(filename, len(filename) - 3)      // Remove ".vm"
     return folderPath + baseName + ".asm"             // Add ".asm"
 end
+
+
+func cleanString(str)
+    cleaned = ""
+    for i = 1 to len(str)
+        ch = substr(str, i, 1)
+        asciiVal = ascii(ch)
+        if asciiVal >= 32 and asciiVal <= 126  # 32 = רווח רגיל, עד תווים מדפיסים
+            cleaned += ch
+        ok
+    next
+    return cleaned
