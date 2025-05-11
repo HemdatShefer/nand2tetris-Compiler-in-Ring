@@ -4,8 +4,7 @@ Load "HelperFunctions.ring"
 
 func main()
     see "Enter input directory path: " + nl
-    dirPath = input()
-    dirPath = trim(dirPath)
+    dirPath = trim(input())
 
     see "You entered: " + dirPath + nl
 
@@ -17,20 +16,33 @@ func main()
         return
     ok
 
+    # Create a single output file for all VM files
+    # Use the directory name as the output file name
+    dirName = getDirectoryName(dirPath)
+    outputFile = dirPath + "/" + dirName + ".asm"
+    
+    see "Creating single output file: " + outputFile + nl
+    
+    # Initialize CodeWriter with the single output file
+    codeWriter = new CodeWriter(outputFile)
+    if codeWriter.file_stream = NULL
+        see "FATAL ERROR: Cannot write to file: " + outputFile + nl
+        return
+    ok
+    
+    # If processing multiple files, we need to write bootstrap code
+    if len(allFiles) > 1
+        codeWriter.writeInit()  # Assuming CodeWriter has a writeInit() method for bootstrap code
+    ok
 
     for file in allFiles
-
         see "Processing file: " + file + nl
-        outputFile = getAsmFilePath(file)
-
-        codeWriter = new CodeWriter(outputFile)
-        if codeWriter.file_stream = NULL
-            see "FATAL ERROR: Cannot write to file: " + outputFile + nl
-        ok
-
+        
+        # Set the current file name in the code writer
         codeWriter.setFileName(file)
+        
+        # Create parser for the current file
         parser = new Parser(file)
-
 
         while parser.hasMoreCommands()
             parser.advance()
@@ -77,4 +89,19 @@ func main()
 
     codeWriter.close()
     see "Assembly code has been written to " + outputFile + nl
+end
+
+# Helper function to get the directory name from a path
+func getDirectoryName(path)
+    if substr(path, len(path), 1) = "/" or substr(path, len(path), 1) = "\"
+        path = substr(path, 1, len(path) - 1)
+    ok
+    
+    for i = len(path) to 1 step -1
+        if substr(path, i, 1) = "/" or substr(path, i, 1) = "\"
+            return substr(path, i+1)
+        ok
+    next
+    
+    return path
 end

@@ -7,14 +7,6 @@ class CodeWriter
     
     func init(fileName)
         self.file_stream = fopen(fileName, "w+")
-	see "open file: " + fileName
-	
-	if not self.file_stream 
-	        see "ERROR: Could not open file for writing: " + fileName + nl
-	        self.file_stream = NULL
-	        return
-    	ok
-
         # Extract just the base filename from the path
         self.fileName = extractFileName(fileName)
     
@@ -53,6 +45,9 @@ class CodeWriter
         fwrite(self.file_stream, code)
     
     func getEqCommandLine(end_label, loop_label)
+        end_label = cleanString(end_label)
+        loop_label = cleanString(loop_label)
+        
         result = "//eq" + self.NEW_LINE
         result += "@SP" + self.NEW_LINE
         result += "M=M-1" + self.NEW_LINE
@@ -80,6 +75,9 @@ class CodeWriter
         return result
 
     func getLtCommandLine(end_label, loop_label)
+        end_label = cleanString(end_label)
+        loop_label = cleanString(loop_label)
+
         result = "//lt" + self.NEW_LINE
         result += "@SP" + self.NEW_LINE
         result += "M=M-1" + self.NEW_LINE
@@ -107,6 +105,9 @@ class CodeWriter
         return result
 
     func getGtCommandLine(end_label, loop_label)
+        end_label = cleanString(end_label)
+        loop_label = cleanString(loop_label)
+
         result = "//gt" + self.NEW_LINE
         result += "@SP" + self.NEW_LINE
         result += "M=M-1" + self.NEW_LINE
@@ -337,7 +338,7 @@ class CodeWriter
             code += "M=M-1" + self.NEW_LINE
             code += "A=M" + self.NEW_LINE
             code += "D=M" + self.NEW_LINE
-            code += "@" + self.fileName + "." + index + self.NEW_LINE
+            code += "@" + "." + index + self.NEW_LINE
             code += "M=D" + self.NEW_LINE
 
         else
@@ -440,7 +441,10 @@ class CodeWriter
         but segment = "static"
             code = "//push static " + index + self.NEW_LINE
             # Modified to use fileName.index format for static variables
-            code += "@" + self.fileName + "." + index + self.NEW_LINE
+            
+            code += "@" + index + self.NEW_LINE
+            #code += "@" + self.fileName + "." + index + self.NEW_LINE
+            
             code += "D=M" + self.NEW_LINE
             code += "@SP" + self.NEW_LINE
             code += "A=M" + self.NEW_LINE
@@ -455,13 +459,17 @@ class CodeWriter
     
     # NEW FUNCTION: Write label command
     func writeLabel(label)
+        label = cleanString(label)
+
         # Write assembly code that effects the label command
         code = "//label " + label + self.NEW_LINE
         code += "(" + label + ")" + self.NEW_LINE
         self.writeLine(code)
     
     # NEW FUNCTION: Write goto command
-    func writeGoto(label) 
+    func writeGoto(label)
+        label = cleanString(label)
+ 
         # Write assembly code that effects the goto command
         code = "//goto " + label + self.NEW_LINE
         code += "@" + label + self.NEW_LINE
@@ -471,6 +479,8 @@ class CodeWriter
     # NEW FUNCTION: Write if-goto command
     func writeIf(label)
         # Write assembly code that effects the if-goto command
+        label = cleanString(label)
+
         code = "//if-goto " + label + self.NEW_LINE
         code += "@SP" + self.NEW_LINE
         code += "AM=M-1" + self.NEW_LINE
@@ -481,7 +491,7 @@ class CodeWriter
     
     # NEW FUNCTION: Write VM initialization (bootstrap code)
     func writeInit()
-        # Write assembly code that effects the VM initialization
+        # Write assembly code that effects the VM initialization  
         code = "//Bootstrap code" + self.NEW_LINE
         code += "@256" + self.NEW_LINE
         code += "D=A" + self.NEW_LINE
@@ -495,6 +505,7 @@ class CodeWriter
     # NEW FUNCTION: Write function command
     func writeFunction(functionName, numLocals)
         # Write assembly code that effects the function command
+        functionName = cleanString(functionName)
         code = "//function " + functionName + " " + numLocals + self.NEW_LINE
         code += "(" + functionName + ")" + self.NEW_LINE
         
@@ -511,6 +522,8 @@ class CodeWriter
     
     # NEW FUNCTION: Write call command
     func writeCall(functionName, numArgs)
+        functionName = cleanString(functionName)
+
         # Generate return address
         self.functionReturnIndex++
         returnLabel = "RETURN_ADDRESS." + functionName + "." + self.functionReturnIndex
@@ -654,9 +667,6 @@ class CodeWriter
         self.writeLine(code)
     
     func close()
-	if not self.file_stream 
-	        see "ERROR: Could not open file for writing: " + fileName + nl
-	ok
         fclose(self.file_stream)
         self.file_stream = NULL
     
