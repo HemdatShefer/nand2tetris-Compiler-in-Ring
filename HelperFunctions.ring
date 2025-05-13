@@ -42,7 +42,7 @@ func findFilesWithExtension(path, fileExtension)
     for entry in dirContent
         name = entry[1]
         isDir = entry[2]
-        fullpath = path + "\\" + name
+        fullpath = path + "\" + name
 
         if isDir
             Add(fileList, findFilesWithExtension(fullpath, fileExtension), true)
@@ -99,7 +99,7 @@ end
 
 // This function changes .vm to .asm in file name
 func getAsmFilePath(vmFilePath)
-    parts = my_split(vmFilePath, "\\")                // Split path
+    parts = my_split(vmFilePath, "\")                // Split path
     filename = parts[len(parts)]                      // Get file name
     folderLength = len(vmFilePath) - len(filename)    // Get length without file name
     folderPath = left(vmFilePath, folderLength)       // Get folder path
@@ -118,3 +118,12 @@ func cleanString(str)
         ok
     next
     return cleaned
+
+
+# Helper function to get the directory name from a path
+func getDirectoryName(path)
+    parts = my_split(path, "\")                // Split path
+    Dirname = parts[len(parts)]
+    see "Dirname is : " + Dirname
+    return Dirname
+end
