@@ -90,18 +90,3 @@ func main()
     codeWriter.close()
     see "Assembly code has been written to " + outputFile + nl
 end
-
-# Helper function to get the directory name from a path
-func getDirectoryName(path)
-    if substr(path, len(path), 1) = "/" or substr(path, len(path), 1) = "\"
-        path = substr(path, 1, len(path) - 1)
-    ok
-    
-    for i = len(path) to 1 step -1
-        if substr(path, i, 1) = "/" or substr(path, i, 1) = "\"
-            return substr(path, i+1)
-        ok
-    next
-    
-    return path
-end
