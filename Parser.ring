@@ -47,7 +47,7 @@ class Parser
 
             if pos > 0
                 currentLine = left(currentLine, pos - 1)
-            ok
+            ok 
 
             currentLine = trim(currentLine)
 
