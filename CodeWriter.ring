@@ -1,3 +1,5 @@
+Load "HelperFunctions.ring"
+
 class CodeWriter 
     NEW_LINE = nl
     labelCount = 0
@@ -338,7 +340,11 @@ class CodeWriter
             code += "M=M-1" + self.NEW_LINE
             code += "A=M" + self.NEW_LINE
             code += "D=M" + self.NEW_LINE
-            code += "@" + "." + index + self.NEW_LINE
+
+            #-----------------------------------------------------------------------------------
+            realName = extract_class_name(self.fileName)
+            code += "@" + realName +"." + index + self.NEW_LINE
+
             code += "M=D" + self.NEW_LINE
 
         else
@@ -441,9 +447,10 @@ class CodeWriter
         but segment = "static"
             code = "//push static " + index + self.NEW_LINE
             # Modified to use fileName.index format for static variables
-            
-            code += "@" + index + self.NEW_LINE
-            #code += "@" + self.fileName + "." + index + self.NEW_LINE
+
+            #----------------------------------------------------------------------------------------------
+            realName = extract_class_name(self.fileName)
+            code += "@" + realName + "." + index + self.NEW_LINE
             
             code += "D=M" + self.NEW_LINE
             code += "@SP" + self.NEW_LINE
@@ -670,7 +677,6 @@ class CodeWriter
         fclose(self.file_stream)
         self.file_stream = NULL
     
-#end
 
 func cleanString(str)
     cleaned = ""
@@ -682,3 +688,10 @@ func cleanString(str)
         ok
     next
     return cleaned
+
+
+func extract_class_name(path)
+    path_parts = my_split(path, "\")
+    return path_parts[len(path_parts)]
+end
+
