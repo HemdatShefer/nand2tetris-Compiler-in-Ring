@@ -1,0 +1,52 @@
+class Main {
+    function void main() {
+        var char key;
+        var boolean running;
+        var Actions actions;
+
+        let actions = Actions.new();
+
+        // Ask the user to choose a shape
+        do Output.printString("Choose your shape:");
+        do Output.println();
+        do Output.printString("Press '1' for Ring");
+        do Output.println();
+        do Output.printString("Press '2' for Fish");
+        do Output.println();
+
+        // Wait for valid input: '1' or '2'
+        let key = Keyboard.readChar();
+
+        if (key = 49) {
+            do actions.setShape(0); // 0 for Ring
+        }
+        else {
+            do actions.setShape(1); // 1 for Fish
+        }
+
+        do actions.drawShape();
+
+        do actions.printHelpMenu();
+
+        let running = true;
+
+        while (running) {
+            do actions.drawShape();
+            let key = Keyboard.readChar();
+
+            if (key = 129) { do actions.moveUp(); }
+            if (key = 131) { do actions.moveDown(); }
+            if (key = 130) { do actions.moveLeft(); }
+            if (key = 132) { do actions.moveRight(); }
+            if (key = 66)  { do actions.scaleUp(); }
+            if (key = 83)  { do actions.scaleDown(); }
+            if (key = 69) {
+                do actions.exit();
+                let running = false;
+            }
+        }
+
+        return;
+    }
+
+}
