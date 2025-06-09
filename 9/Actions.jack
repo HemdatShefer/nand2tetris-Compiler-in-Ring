@@ -1,0 +1,148 @@
+class Actions {
+    field int actionCounter;
+    field int posX;
+    field int posY;
+    field int selectedShape; // 0=ring, 1=fish
+    field Shapes shapes;
+    field int R;
+    
+    constructor Actions new() {
+        let actionCounter = 0;
+        let posX = 16;  // Changed from 4096 to 16 (middle of screen)
+        let posY = 12;  // Changed from 96 to 12 (middle of screen)
+        let selectedShape = 0; 
+        let shapes = Shapes.new();
+        let R = 0;
+
+        return this;
+    }
+    
+    method void setShape(int shape) 
+    {
+        let selectedShape = shape;
+        return;
+    }
+    
+    method void printHelpMenu() 
+    {
+    do Output.println();
+    do Output.printString("Welcome to the Shape Control Game!");
+    do Output.println();
+    do Output.printString("Available Controls:");
+    do Output.println();
+    do Output.printString("Left Arrow    : Move Left");
+    do Output.println();
+    do Output.printString("Right Arrow   : Move Right");
+    do Output.println();
+    do Output.printString("Up Arrow      : Move Up");
+    do Output.println();
+    do Output.printString("Down Arrow    : Move Down");
+    do Output.println();
+    do Output.printString("'R' key         : Rotate 90 degrees");
+    do Output.println();
+    do Output.printString("'E' key         : Exit");
+    do Output.println();
+    return;
+    }
+    
+    method void clearScreen() {
+    var int i;
+    let i = 0;
+    while (i < 8192) {
+        do Memory.poke(16384 + i, 0);
+        let i = i + 1;
+    }
+    return;
+}
+    
+method void drawShape() {
+    var int screenLocation;
+    let screenLocation = posX + (posY * 32);
+    
+    do clearScreen();
+    
+    if (selectedShape = 0) {
+        if (R = 90) 
+        { 
+            do shapes.draw90ring(screenLocation); 
+        }
+        if (R = 180) {
+            do shapes.draw180ring(screenLocation); 
+        }
+        if (R = 270) {
+            do shapes.draw270ring(screenLocation); 
+        }
+        if (R = 0) {
+            do shapes.drawRing(screenLocation); 
+        }
+    } 
+    else {
+        if (R = 90) { do shapes.draw90fish(screenLocation); }
+        if (R = 180) { do shapes.draw180fish(screenLocation); }
+        if (R = 270) { do shapes.draw270fish(screenLocation); }
+        if (R = 0) { do shapes.drawFish(screenLocation); }
+    }
+    return;
+}
+
+    
+    method void moveLeft() {
+    if (posX > 0)
+    {
+        let posX = posX - 1 ;
+        let actionCounter = actionCounter + 1;
+        do drawShape();
+    }
+    return;
+    }
+    
+    method void moveRight() {
+    if (posX < 31)  // Changed from 32 to 31 to prevent overflow
+    {
+        let posX = posX + 1;
+        let actionCounter = actionCounter + 1;
+        do drawShape();
+    }
+    return;
+    }
+    
+    method void moveUp() {
+        if (posY > 0) 
+        {
+        let posY = posY -1 ;
+        let actionCounter = actionCounter + 1;
+        do drawShape();
+        }
+        return;
+    }
+    
+    method void moveDown() {
+        if (posY < 40)
+        {
+        let posY = posY + 1;
+        let actionCounter = actionCounter + 1;
+        do drawShape();
+        }
+        return;
+    }
+    
+    method void rotate() {
+        let R = R + 90;
+        if (R = 360) {
+            let R = 0;
+        }
+        let actionCounter = actionCounter + 1;
+        do drawShape();
+        return;
+    }
+
+    
+method void exit() {
+    // Exit the game
+    do Output.printString("number of Actions: ");
+    do Output.printInt(actionCounter); 
+    do Sys.halt();
+    return;
+}
+
+}

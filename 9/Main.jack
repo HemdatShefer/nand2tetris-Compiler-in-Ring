@@ -1,0 +1,40 @@
+class Main {
+    function void main() {
+        var Actions actions;
+        var char key;
+        var boolean running;
+
+        let actions = Actions.new();
+
+        do Screen.clearScreen();
+        do Output.printString("Press 1 for Ring, 2 for Fish:");
+        let key = Keyboard.readChar();
+
+        if (key = 49) {
+            do actions.setShape(0);
+        }
+        else {
+            do actions.setShape(1);
+        }
+
+        do actions.drawShape();
+        do actions.printHelpMenu();
+        let running = true;
+
+        while (running) {
+            let key = Keyboard.keyPressed();
+
+            if (key = 130) { do actions.moveLeft(); }
+            if (key = 132) { do actions.moveRight(); }
+            if (key = 131) { do actions.moveUp(); }
+            if (key = 133) { do actions.moveDown(); }
+            if (key = 82)  { do actions.rotate(); }
+            if (key = 69)  { let running = false; }
+
+            do Sys.wait(5);
+        }
+
+        do actions.exit();
+        return;
+    }
+}
