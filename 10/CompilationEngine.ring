@@ -13,7 +13,7 @@ class CompilationEngine
         self.indentLevel = 0
         
         if self.outputFile = 0
-            see "Error creating output file: " + outputFile + nl
+            see "Error crprocessTokening output file: " + outputFile + nl
         ok
 
     func writeIndent()
@@ -46,7 +46,7 @@ class CompilationEngine
         self.writeIndent()
         fwrite(outputFile, "</" + tag + ">" + nl)
 
-    func eat(expectedToken)
+    func processToken(expectedToken)
         if tokenizer.getCurrentToken() = expectedToken
             tokenType = tokenizer.tokenType()
             token = tokenizer.getCurrentToken()
@@ -75,13 +75,13 @@ class CompilationEngine
         tokenizer.advance()
         
         # 'class'
-        self.eat("class")
+        self.processToken("class")
         
         # className
-        self.eat(tokenizer.getCurrentToken())
+        self.processToken(tokenizer.getCurrentToken())
         
         # '{'
-        self.eat("{")
+        self.processToken("{")
         
         # classVarDec*
         while tokenizer.getCurrentToken() = "static" or tokenizer.getCurrentToken() = "field"
@@ -94,7 +94,7 @@ class CompilationEngine
         end
         
         # '}'
-        self.eat("}")
+        self.processToken("}")
         
         self.writeCloseTag("class")
 
@@ -102,22 +102,22 @@ class CompilationEngine
         self.writeOpenTag("classVarDec")
         
         # ('static' | 'field')
-        self.eat(tokenizer.getCurrentToken())
+        self.processToken(tokenizer.getCurrentToken())
         
         # type
-        self.eat(tokenizer.getCurrentToken())
+        self.processToken(tokenizer.getCurrentToken())
         
         # varName
-        self.eat(tokenizer.getCurrentToken())
+        self.processToken(tokenizer.getCurrentToken())
         
         # (',' varName)*
         while tokenizer.getCurrentToken() = ","
-            self.eat(",")
-            self.eat(tokenizer.getCurrentToken())
+            self.processToken(",")
+            self.processToken(tokenizer.getCurrentToken())
         end
         
         # ';'
-        self.eat(";")
+        self.processToken(";")
         
         self.writeCloseTag("classVarDec")
 
@@ -125,22 +125,22 @@ class CompilationEngine
         self.writeOpenTag("subroutineDec")
         
         # ('constructor' | 'function' | 'method')
-        self.eat(tokenizer.getCurrentToken())
+        self.processToken(tokenizer.getCurrentToken())
         
         # ('void' | type)
-        self.eat(tokenizer.getCurrentToken())
+        self.processToken(tokenizer.getCurrentToken())
         
         # subroutineName
-        self.eat(tokenizer.getCurrentToken())
+        self.processToken(tokenizer.getCurrentToken())
         
         # '('
-        self.eat("(")
+        self.processToken("(")
         
         # parameterList
         self.compileParameterList()
         
         # ')'
-        self.eat(")")
+        self.processToken(")")
         
         # subroutineBody
         self.compileSubroutineBody()
@@ -153,16 +153,16 @@ class CompilationEngine
         # Check if parameter list is empty
         if tokenizer.getCurrentToken() != ")"
             # type
-            self.eat(tokenizer.getCurrentToken())
+            self.processToken(tokenizer.getCurrentToken())
             
             # varName
-            self.eat(tokenizer.getCurrentToken())
+            self.processToken(tokenizer.getCurrentToken())
             
             # (',' type varName)*
             while tokenizer.getCurrentToken() = ","
-                self.eat(",")
-                self.eat(tokenizer.getCurrentToken()) # type
-                self.eat(tokenizer.getCurrentToken()) # varName
+                self.processToken(",")
+                self.processToken(tokenizer.getCurrentToken()) # type
+                self.processToken(tokenizer.getCurrentToken()) # varName
             end
         ok
         
@@ -172,7 +172,7 @@ class CompilationEngine
         self.writeOpenTag("subroutineBody")
         
         # '{'
-        self.eat("{")
+        self.processToken("{")
         
         # varDec*
         while tokenizer.getCurrentToken() = "var"
@@ -183,7 +183,7 @@ class CompilationEngine
         self.compileStatements()
         
         # '}'
-        self.eat("}")
+        self.processToken("}")
         
         self.writeCloseTag("subroutineBody")
 
@@ -191,22 +191,22 @@ class CompilationEngine
         self.writeOpenTag("varDec")
         
         # 'var'
-        self.eat("var")
+        self.processToken("var")
         
         # type
-        self.eat(tokenizer.getCurrentToken())
+        self.processToken(tokenizer.getCurrentToken())
         
         # varName
-        self.eat(tokenizer.getCurrentToken())
+        self.processToken(tokenizer.getCurrentToken())
         
         # (',' varName)*
         while tokenizer.getCurrentToken() = ","
-            self.eat(",")
-            self.eat(tokenizer.getCurrentToken())
+            self.processToken(",")
+            self.processToken(tokenizer.getCurrentToken())
         end
         
         # ';'
-        self.eat(";")
+        self.processToken(";")
         
         self.writeCloseTag("varDec")
 
@@ -238,26 +238,26 @@ class CompilationEngine
         self.writeOpenTag("letStatement")
         
         # 'let'
-        self.eat("let")
+        self.processToken("let")
         
         # varName
-        self.eat(tokenizer.getCurrentToken())
+        self.processToken(tokenizer.getCurrentToken())
         
         # ('[' expression ']')?
         if tokenizer.getCurrentToken() = "["
-            self.eat("[")
+            self.processToken("[")
             self.compileExpression()
-            self.eat("]")
+            self.processToken("]")
         ok
         
         # '='
-        self.eat("=")
+        self.processToken("=")
         
         # expression
         self.compileExpression()
         
         # ';'
-        self.eat(";")
+        self.processToken(";")
         
         self.writeCloseTag("letStatement")
 
@@ -265,32 +265,32 @@ class CompilationEngine
         self.writeOpenTag("ifStatement")
         
         # 'if'
-        self.eat("if")
+        self.processToken("if")
         
         # '('
-        self.eat("(")
+        self.processToken("(")
         
         # expression
         self.compileExpression()
         
         # ')'
-        self.eat(")")
+        self.processToken(")")
         
         # '{'
-        self.eat("{")
+        self.processToken("{")
         
         # statements
         self.compileStatements()
         
         # '}'
-        self.eat("}")
+        self.processToken("}")
         
         # ('else' '{' statements '}')?
         if tokenizer.getCurrentToken() = "else"
-            self.eat("else")
-            self.eat("{")
+            self.processToken("else")
+            self.processToken("{")
             self.compileStatements()
-            self.eat("}")
+            self.processToken("}")
         ok
         
         self.writeCloseTag("ifStatement")
@@ -299,25 +299,25 @@ class CompilationEngine
         self.writeOpenTag("whileStatement")
         
         # 'while'
-        self.eat("while")
+        self.processToken("while")
         
         # '('
-        self.eat("(")
+        self.processToken("(")
         
         # expression
         self.compileExpression()
         
         # ')'
-        self.eat(")")
+        self.processToken(")")
         
         # '{'
-        self.eat("{")
+        self.processToken("{")
         
         # statements
         self.compileStatements()
         
         # '}'
-        self.eat("}")
+        self.processToken("}")
         
         self.writeCloseTag("whileStatement")
 
@@ -325,13 +325,13 @@ class CompilationEngine
         self.writeOpenTag("doStatement")
         
         # 'do'
-        self.eat("do")
+        self.processToken("do")
         
         # subroutineCall
         self.compileSubroutineCall()
         
         # ';'
-        self.eat(";")
+        self.processToken(";")
         
         self.writeCloseTag("doStatement")
 
@@ -339,7 +339,7 @@ class CompilationEngine
         self.writeOpenTag("returnStatement")
         
         # 'return'
-        self.eat("return")
+        self.processToken("return")
         
         # expression?
         if tokenizer.getCurrentToken() != ";"
@@ -347,7 +347,7 @@ class CompilationEngine
         ok
         
         # ';'
-        self.eat(";")
+        self.processToken(";")
         
         self.writeCloseTag("returnStatement")
 
@@ -368,7 +368,7 @@ class CompilationEngine
               tokenizer.getCurrentToken() = ">" or 
               tokenizer.getCurrentToken() = "="
             
-            self.eat(tokenizer.getCurrentToken())
+            self.processToken(tokenizer.getCurrentToken())
             self.compileTerm()
         end
         
@@ -381,32 +381,32 @@ class CompilationEngine
         tokenType = tokenizer.tokenType()
         
         if tokenType = "integerConstant"
-            self.eat(currentToken)
+            self.processToken(currentToken)
         but tokenType = "stringConstant"
-            self.eat(currentToken)
+            self.processToken(currentToken)
         but currentToken = "true" or currentToken = "false" or currentToken = "null" or currentToken = "this"
-            self.eat(currentToken)
+            self.processToken(currentToken)
         but currentToken = "(" # (expression)
-            self.eat("(")
+            self.processToken("(")
             self.compileExpression()
-            self.eat(")")
+            self.processToken(")")
         but currentToken = "-" or currentToken = "~" # unaryOp term
-            self.eat(currentToken)
+            self.processToken(currentToken)
             self.compileTerm()
         but tokenType = "identifier"
             nextToken = tokenizer.peekToken()
             if nextToken = "["
                 # varName[expression]
-                self.eat(currentToken)
-                self.eat("[")
+                self.processToken(currentToken)
+                self.processToken("[")
                 self.compileExpression()
-                self.eat("]")
+                self.processToken("]")
             but nextToken = "(" or nextToken = "."
                 # subroutineCall
                 self.compileSubroutineCall()
             else
                 # varName
-                self.eat(currentToken)
+                self.processToken(currentToken)
             ok
         ok
         
@@ -414,21 +414,21 @@ class CompilationEngine
 
     func compileSubroutineCall()
         # subroutineName | (className | varName).subroutineName
-        self.eat(tokenizer.getCurrentToken())
+        self.processToken(tokenizer.getCurrentToken())
         
         if tokenizer.getCurrentToken() = "."
-            self.eat(".")
-            self.eat(tokenizer.getCurrentToken())
+            self.processToken(".")
+            self.processToken(tokenizer.getCurrentToken())
         ok
         
         # '('
-        self.eat("(")
+        self.processToken("(")
         
         # expressionList
         self.compileExpressionList()
         
         # ')'
-        self.eat(")")
+        self.processToken(")")
 
     func compileExpressionList()
         self.writeOpenTag("expressionList")
@@ -440,7 +440,7 @@ class CompilationEngine
             
             # (',' expression)*
             while tokenizer.getCurrentToken() = ","
-                self.eat(",")
+                self.processToken(",")
                 self.compileExpression()
             end
         ok

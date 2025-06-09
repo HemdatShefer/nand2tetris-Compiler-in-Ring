@@ -31,7 +31,7 @@ class JackTokenizer
         ok
         
         tokens = []
-        currentTokenIndex = 0
+        currentTokenIndex = 0  # FIXED: Start at 0
         self.tokenizeFile()
 
     func tokenizeFile()
@@ -212,7 +212,8 @@ class JackTokenizer
         return ""
 
     func peekToken()
-        if currentTokenIndex < len(tokens)
+        # FIXED: Better bounds checking
+        if currentTokenIndex + 1 <= len(tokens)
             return tokens[currentTokenIndex + 1][2]
         ok
         return ""

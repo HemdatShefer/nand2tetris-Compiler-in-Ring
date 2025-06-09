@@ -58,9 +58,10 @@ func tokenizeOnly(inputFile, outputFile)
     # Write opening tag
     fwrite(output, "<tokens>" + nl)
     
-    # Process all tokens
-    tokenizer.advance()
+    # Process all tokens - FIXED: Don't advance before loop
     while tokenizer.hasMoreTokens()
+        tokenizer.advance()  # Advance first, then process
+        
         tokenType = tokenizer.tokenType()
         token = tokenizer.getCurrentToken()
         
@@ -76,7 +77,6 @@ func tokenizeOnly(inputFile, outputFile)
         ok
         
         fwrite(output, "<" + tokenType + "> " + token + " </" + tokenType + ">" + nl)
-        tokenizer.advance()
     end
     
     # Write closing tag
