@@ -67,6 +67,10 @@ func findVMFiles(path)
     return findFilesWithExtension(path, "vm")
 end
 
+findJackFiles(path)
+    return findFilesWithExtension(path, "jack")
+end
+
 ///.......................................
 /// Wrapper for finding all `.jack` files
 ///.......................................
