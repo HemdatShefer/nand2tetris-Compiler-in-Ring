@@ -67,7 +67,6 @@ func findVMFiles(path)
     return findFilesWithExtension(path, "vm")
 end
 
-
 ///.......................................
 /// Wrapper for finding all `.jack` files
 ///.......................................
@@ -177,5 +176,3 @@ func getBaseName(filePath)
     ok
     return filePath
 end
-
-

@@ -29,6 +29,13 @@ func main()
     
     see "Jack analysis completed." + nl
 
+
+func parseFile(inputFile, outputFile)
+    compilationEngine = new CompilationEngine(inputFile, outputFile)
+    compilationEngine.compileClass()
+    compilationEngine.close()
+
+
 func analyzeFile(jackFile)
     see "Analyzing file: " + jackFile + nl
     
@@ -45,6 +52,9 @@ func analyzeFile(jackFile)
     
     see "Generated: " + tokensOutput + nl
     see "Generated: " + parseOutput + nl
+
+
+
 
 func tokenizeOnly(inputFile, outputFile)
     tokenizer = new JackTokenizer(inputFile)
@@ -83,10 +93,4 @@ func tokenizeOnly(inputFile, outputFile)
     fwrite(output, "</tokens>" + nl)
     
     fclose(output)
-
-func parseFile(inputFile, outputFile)
-    compilationEngine = new CompilationEngine(inputFile, outputFile)
-    compilationEngine.compileClass()
-    compilationEngine.close()
-
 # Functions findJackFiles and getBaseName are now in HelperFunctions.ring
