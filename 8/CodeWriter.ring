@@ -496,7 +496,7 @@ class CodeWriter
         code += "D;JNE" + self.NEW_LINE
         self.writeLine(code)
     
-    # NEW FUNCTION: Write VM initialization (bootstrap code)
+    #  Write VM initialization (bootstrap code)
     func writeInit()
         # Write assembly code that effects the VM initialization  
         code = "//Bootstrap code" + self.NEW_LINE
@@ -509,7 +509,7 @@ class CodeWriter
         # Call Sys.init with 0 arguments
         self.writeCall("Sys.init", 0)
     
-    # NEW FUNCTION: Write function command
+    # Write function command
     func writeFunction(functionName, numLocals)
         # Write assembly code that effects the function command
         functionName = cleanString(functionName)
@@ -527,7 +527,7 @@ class CodeWriter
         
         self.writeLine(code)
     
-    # NEW FUNCTION: Write call command
+    # Write call command
     func writeCall(functionName, numArgs)
         functionName = cleanString(functionName)
 

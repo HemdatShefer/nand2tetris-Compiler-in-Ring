@@ -148,6 +148,7 @@ class CompilationEngine
         if currentSubroutineType = "constructor"
             # Allocate memory for object
             nFields = symbolTable.varCount("field")
+            see "Allocating memory for " + nFields + " fields in constructor." + nl
             vmWriter.writePush("constant", nFields)
             vmWriter.writeCall("Memory.alloc", 1)
             vmWriter.writePop("pointer", 0)  # Set THIS

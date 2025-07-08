@@ -114,6 +114,94 @@ func getAsmFilePath(vmFilePath)
     return folderPath + baseName + ".asm"             // Add ".asm"
 end
 
+
+
+///.......................................
+/// Checks if a directory contains any `.vm` files.
+/// Returns true if at least one `.vm` file is found.
+///.......................................
+func hasVMFiles(path)
+    list = dir(path)
+    for item in list
+        name = lower(item[1])
+        isDir = item[2]
+        if not isDir and right(name, 3) = ".vm"
+            see "Found VM file: " + name + " in " + path + nl
+            return true
+        ok
+    next
+    return false
+end
+
+
+///.......................................
+/// Checks if a directory contains a `Sys.vm` file.
+/// Returns true if `Sys.vm` is found.
+///.......................................
+func hasSysVm(path)
+    list = dir(path)
+    for item in list
+        name = lower(item[1])
+        isDir = item[2]
+        if not isDir and name = "sys.vm"
+            return true
+        ok
+    next
+    return false
+end
+
+
+
+///.......................................
+/// Creates a `Sys.vm` file in the given path
+/// if it doesn't already exist.
+/// This file is used for VM initialization.
+/// It contains a function `Sys.init` that calls `Main.main`.
+///.......................................  
+func createSysVm(path)
+    see "Checking for Sys.vm in: " + path + nl
+
+    if hasVMFiles(path) and not hasSysVm(path)
+        sysPath = path + "\\Sys.vm"
+        see "Creating Sys.vm in folder: " + path + nl
+        sysFile = fopen(sysPath, "w")
+        if sysFile = 0
+            see "ERROR: Could not create Sys.vm at " + sysPath + nl
+            return
+        ok
+        fwrite(sysFile, "function Sys.init 0"+nl)
+        fwrite(sysFile, "call Main.main 0"+nl)
+        fwrite(sysFile, "return"+nl)
+        fclose(sysFile)
+    else
+        if hasSysVm(path)
+            see "Sys.vm already exists in: " + path + nl
+        ok
+    ok
+end
+
+///.......................................
+/// Recursively ensures that `Sys.vm` exists
+/// in the given directory and all its subdirectories.
+/// If `Sys.vm` is missing, it creates it.
+///.......................................
+func ensureSysVm(path)
+    createSysVm(path)
+
+    // Recursively check subdirectories
+    list = dir(path)
+    for item in list
+        name = item[1]
+        isDir = item[2]
+        if isDir
+            ensureSysVm(path + "\\" + name)
+        ok
+    next
+end
+
+
+
+
 ///.......................................
 /// Character type checking functions
 ///.......................................

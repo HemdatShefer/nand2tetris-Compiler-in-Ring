@@ -24,8 +24,6 @@ class SymbolTable
     # Define a new identifier
     func define(name, type, kind)
         kind = lower(kind)
-        name = lower(name)
-        type = lower(type)
         index = counters[kind]
         entry = [type, kind, index]
 
@@ -46,7 +44,6 @@ class SymbolTable
 
 	# Return the type of a given identifier
     func typeOf(name)
-        name = lower(name)
 
         if isnull(subroutineTable[name]) = false
             return subroutineTable[name][1]
@@ -61,7 +58,6 @@ class SymbolTable
 
     # Return the kind of a given identifier
     func kindOf(name)
-        name = lower(name)
 
         if isnull(subroutineTable[name]) = false
             return subroutineTable[name][2]
@@ -77,7 +73,6 @@ class SymbolTable
 
     # Return the index of a given identifier
     func indexOf(name)
-        name = lower(name)
 
         if isnull(subroutineTable[name]) = false
             return subroutineTable[name][3]

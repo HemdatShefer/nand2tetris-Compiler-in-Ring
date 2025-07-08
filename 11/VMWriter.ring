@@ -48,15 +48,3 @@ Class VMWriter
             fclose(file)
         ok
 
-# Usage Example:
-/*
-load "vmwriter.ring"
-
-vmWriter = new VMWriter("output.vm")
-vmWriter.writePush("local", 0)
-vmWriter.writePush("constant", 5)
-vmWriter.writeArithmetic("add")
-vmWriter.writePop("local", 0)
-vmWriter.writeReturn()
-vmWriter.close()
-*/
